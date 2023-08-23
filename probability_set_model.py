@@ -65,7 +65,7 @@ class ProbabilitySetsModel:
                 probability_set = np.concatenate([p_star.reshape((1,-1)), probability_set])
                 dists_to_p_star = abs(probability_set - p_star.reshape((1,-1))).sum(axis=1)
                     
-            elif self.p_dist_type == 'KL':
+            elif self.p_dist_type == 'KLD':
                 def KL_divergence(p_star, probability_set):
                     epsilon = 1e-10
                     total_distance = 0
@@ -126,6 +126,7 @@ class ProbabilitySetsModel:
                                 prediction_M_indicator[j] = -1
                                 prediction_E_indicator[j] = -1
                                 break
+                            
                         if prediction_E_indicator[j] == -1:
                             continue
                         if rest_probability_set[:,j].max() < 1/self.n_class:
@@ -136,7 +137,7 @@ class ProbabilitySetsModel:
                             continue
                         if np.any(np.sum(rest_probability_set[:,j].reshape((-1,1)) > rest_probability_set, axis=1)==self.n_class-1):
                             prediction_E_indicator[j] = 1
-                            
+                    
                     classes2check = np.where(prediction_E_indicator==0)[0]
                     if len(classes2check) == 0:
                         prediction_E_index = np.where(prediction_E_indicator==1)[0]
@@ -179,10 +180,9 @@ class ProbabilitySetsModel:
                             else:
                                 prediction_E_indicator[j] = -1
 
-                    if np.all(prediction_E_indicator == prediction_M_indicator):
-                        n_equal += 1
-                    class2check += np.sum(prediction_E_indicator==0)
-                    # here for prediction_E_indicator==0, have to sovle the LPs
+                    if sum(prediction_E_indicator==-1) < sum(prediction_M_indicator==-1):
+                        print(prediction_E_indicator)
+                        print(prediction_M_indicator, '\n')
                     prediction_E_index = np.where(prediction_E_indicator==1)[0]
                     predictions.append(self.classes[prediction_E_index])
 
