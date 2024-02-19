@@ -13,14 +13,14 @@ from sklearn.metrics.pairwise import euclidean_distances
 
 
 class ProbabilitySetsModel:
-    def __init__(self, n_trees=100, alpha=0, p_dist_type='SE', min_samples_leaf=3, random_state=42):
+    def __init__(self, n_trees=100, alpha=0, p_dist_type='SE', min_samples_leaf=5, random_state=42):
         self.n_trees = n_trees
         self.alpha = alpha
         self.p_dist_type = p_dist_type
         self.min_samples_leaf = min_samples_leaf
         self.classes = None
         self.n_class = None
-        self.rf = RandomForestClassifier(n_estimators=n_trees, min_samples_leaf=min_samples_leaf, random_state=random_state)
+        self.rf = RandomForestClassifier(n_estimators=n_trees, min_samples_leaf=min_samples_leaf, max_features='sqrt', random_state=random_state)
         
         
     def fit(self, train_x, train_y):
