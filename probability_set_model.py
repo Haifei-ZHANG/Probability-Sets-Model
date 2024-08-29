@@ -71,10 +71,10 @@ class ProbabilitySetsModel:
                     total_distance = 0
                     p_star = np.where(p_star < epsilon, epsilon, p_star)
                     probability_set = np.where(probability_set < epsilon, epsilon, probability_set)
-                    total_distance = np.sum(probability_set * np.log(probability_set/p_star))
+                    total_distance = np.sum(p_star * np.log(p_star/probability_set))
 #                     for p_point in probability_set:
 #                         p_point = np.where(p_point < epsilon, epsilon, p_point)
-#                         dist_distance = np.sum(p_point * np.log(p_point/p_star))
+#                         dist_distance = np.sum(p_star * np.log(p_star/p_point))
 #                         total_distance += dist_distance
                     return total_distance
                 
