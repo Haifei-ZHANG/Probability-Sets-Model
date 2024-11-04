@@ -90,7 +90,7 @@ class ProbabilitySetsModel:
                 p_star = np.where(p_star < epsilon, epsilon, p_star)
                 probability_set = np.where(probability_set < epsilon, epsilon, probability_set)
                 probability_set = np.concatenate([p_star.reshape((1,-1)), probability_set])
-                dists_to_p_star = (probability_set*np.log(probability_set/(p_star.reshape((1,-1))))).sum(axis=1)
+                dists_to_p_star = (p_star * np.log(p_star/probability_set)).sum(axis=1)
             else: # SE
                 p_star = probability_set.mean(axis=0)
                 probability_set = np.concatenate([p_star.reshape((1,-1)), probability_set])
