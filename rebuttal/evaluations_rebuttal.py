@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import KFold
-from cautious_random_forest import CautiousRandomForest
+import sys 
+sys.path.append("..")
 from probability_set_model import ProbabilitySetsModel
 
 
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     for d in range(len(data_names)):
         data_name = data_names[d]
         print(data_name)
-        data = pd.read_csv('data/{}.csv'.format(data_name))
+        data = pd.read_csv('../data/{}.csv'.format(data_name))
         X = np.array(data.iloc[:,:-1])
         y = np.array(data.iloc[:,-1]) 
         
@@ -70,7 +71,7 @@ if __name__ == "__main__":
             data_evaluations[k,:-1,1] = np.array(list(clf.evaluate(X_test, y_test, 'E-admissibility').values()))
                     
         
-        np.save('rebuttal/imprecise prediction/min_samples_leaf={}/{}_evaluations.npy'.format(msl, data_name), data_evaluations)           
+        np.save('./imprecise prediction/min_samples_leaf={}/{}_evaluations.npy'.format(msl, data_name), data_evaluations)           
         for i in range(len(evaluation_criteria)):
             if i in [3,4,7]:
                 for j in range(2):
@@ -81,17 +82,17 @@ if __name__ == "__main__":
             else:
                 for j in range(2):
                     total_evaluations[i,d,j] = data_evaluations[:,i,j].mean()
-        np.save('rebuttal/imprecise prediction/min_samples_leaf={}/total_evaluations.npy'.format(msl), total_evaluations)
+        np.save('./imprecise prediction/min_samples_leaf={}/total_evaluations.npy'.format(msl), total_evaluations)
         print(total_evaluations[:,d,:])
         
         
-    total_evaluations = np.load('rebuttal/imprecise prediction/min_samples_leaf={}/total_evaluations.npy'.format(msl))
+    total_evaluations = np.load('./imprecise prediction/min_samples_leaf={}/total_evaluations.npy'.format(msl))
     
     sheet_names = ['RF Acc', 'Determinacy', 'Single Acc', 'Set Acc', 'Set Size', 'U65', 'U80', 'RF Abstention Acc', 'Best Alpha']
     data_names = ['wine', 'seeds', 'glass', 'ecoli', 'dermatology', 'libras', 'forest', 'balance_scale', 'vehicle', 'vowel', 'wine_quality', 'segment']
     model_names = ['α=0', 'KL-Ead']
     
-    with pd.ExcelWriter('rebuttal/imprecise prediction/min_samples_leaf={}/total_evaluations.xlsx'.format(msl)) as writer:
+    with pd.ExcelWriter('./imprecise prediction/min_samples_leaf={}/total_evaluations.xlsx'.format(msl)) as writer:
         for i in range(len(sheet_names)):
             sheet_name = sheet_names[i]
             df = pd.DataFrame(total_evaluations[i].round(4), columns=model_names, index=data_names)
